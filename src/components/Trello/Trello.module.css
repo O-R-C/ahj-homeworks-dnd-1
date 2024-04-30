@@ -8,9 +8,9 @@
 }
 
 .form-add-card--active {
-  display: flex !important;
+  display: flex;
 }
 
 .hide {
-  display: none !important;
+  display: none;
 }
