@@ -16,7 +16,9 @@ export default class Trello {
   #textarea
   #currentId
   #btnHidden
+  #ghostCard
   #formAddCard
+  #cardDragged
   #columnsArray
   #timerMessage
   #timerTextarea
@@ -64,6 +66,10 @@ export default class Trello {
    */
   #addEventsListeners() {
     this.#columns.addEventListener('click', this.#onClickColumns)
+    this.#columns.addEventListener('mouseup', this.#onMouseUpColumns)
+    this.#columns.addEventListener('mousedown', this.#onMouseDownColumns)
+    this.#columns.addEventListener('mousemove', this.#onMouseMoveColumns)
+    this.#columns.addEventListener('mouseleave', this.#onMouseLeaveColumns)
   }
 
   /**
@@ -335,5 +341,44 @@ export default class Trello {
     this.#storage.saveCards(this.#cards)
 
     this.#renderCards()
+  }
+
+  #onMouseDownColumns = (event) => {
+    event.preventDefault()
+
+    const card = event.target.closest('[class*="card--"]')
+    if (!card) return
+
+    this.#cardDragged = card
+    this.#ghostCard = card.cloneNode(true)
+    this.#ui.addDraggedClass(this.#ghostCard)
+
+    document.body.append(this.#ghostCard)
+    this.#ghostCard.style.width = card.offsetWidth + 'px'
+
+    this.#setGhostCardPosition(event)
+  }
+
+  #setGhostCardPosition = (event) => {
+    if (!this.#cardDragged) return
+    this.#ghostCard.style.left = `${event.pageX - this.#ghostCard.offsetWidth / 2}px`
+    this.#ghostCard.style.top = `${event.pageY - this.#ghostCard.offsetHeight / 2}px`
+  }
+
+  #onMouseMoveColumns = (event) => {
+    event.preventDefault()
+    this.#setGhostCardPosition(event)
+  }
+
+  #onMouseLeaveColumns = () => {
+    if (!this.#cardDragged) return
+
+    this.#onMouseUpColumns()
+  }
+
+  #onMouseUpColumns = () => {
+    this.#ghostCard && this.#ghostCard.remove()
+    this.#cardDragged = null
+    this.#ghostCard = null
   }
 }

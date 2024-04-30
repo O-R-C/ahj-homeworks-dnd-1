@@ -82,4 +82,14 @@ export default class TrelloUI {
   removePlaceholderWarning(element) {
     element.classList.remove(styles['warning'])
   }
+
+  /**
+   * Adds the 'dragged' class to the provided element's classList.
+   *
+   * @param {HTMLElement} element - The element to add the class to.
+   * @return {void} This function does not return anything.
+   */
+  addDraggedClass(element) {
+    element.classList.add(styles.dragged)
+  }
 }

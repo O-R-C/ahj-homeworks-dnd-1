@@ -22,3 +22,9 @@
 .warning::placeholder {
   color: red;
 }
+
+.dragged {
+  position: absolute;
+  z-index: 100;
+  pointer-events: none;
+}
