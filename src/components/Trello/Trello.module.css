@@ -1,0 +1,8 @@
+@value values: '@/css/variables.module.css';
+@value colorMain from values;
+
+.app {
+  min-height: 100vh;
+  padding: 40px;
+  background-color: colorMain;
+}

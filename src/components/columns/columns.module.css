@@ -1,0 +1,21 @@
+.columns {
+  width: 1200px;
+  margin: 0 auto;
+
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+
+  gap: 10px;
+}
+
+.column-first {
+  grid-column: 1 / 2;
+}
+
+.column-second {
+  grid-column: 2 / 3;
+}
+
+.column-third {
+  grid-column: 3 / 4;
+}

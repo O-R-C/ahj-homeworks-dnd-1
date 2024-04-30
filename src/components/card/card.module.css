@@ -1,0 +1,12 @@
+@value values: '@/css/variables.module.css';
+@value shadow, radius from values;
+
+.card {
+  padding: 10px;
+  border-radius: radius;
+  box-shadow: shadow;
+}
+
+.card__paragraph {
+  margin: 0;
+}

@@ -1,0 +1,56 @@
+@value values: '@/css/variables.module.css';
+@value shadow, colorMain from values;
+
+.form-add-card {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.form-add-card__textarea {
+  resize: none;
+  width: 100%;
+
+  border: 2px solid colorMain;
+  border-radius: 5px;
+  padding: 10px;
+
+  font: 1em sans-serif;
+
+  box-shadow: shadow;
+}
+
+.form-add-card__controls {
+  display: flex;
+  justify-content: start;
+  gap: 10px;
+
+  font: 1em sans-serif;
+}
+
+.form-add-card__button-add {
+  width: 40%;
+  cursor: pointer;
+
+  border: 2px solid colorMain;
+  border-radius: 5px;
+  padding: 10px;
+
+  font: inherit;
+}
+
+.form-add-card__button-add:hover {
+  color: green;
+}
+
+.form-add-card__button-cancel {
+  width: 10%;
+  cursor: pointer;
+
+  border: none;
+  padding: 10px;
+
+  font: inherit;
+
+  background: url('@images/cancel.png') no-repeat center;
+}

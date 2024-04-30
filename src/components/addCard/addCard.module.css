@@ -1,0 +1,30 @@
+@value values: '@/css/variables.module.css';
+@value colorMain from values;
+
+.add-card {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.add-card__button-add {
+  width: 100%;
+  cursor: pointer;
+
+  border: none;
+  padding: 10px;
+
+  background: inherit;
+
+  font: 1em sans-serif;
+  color: colorMain;
+
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.add-card__button-add::before {
+  content: '+';
+  font-size: 1.5em;
+}
