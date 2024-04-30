@@ -11,7 +11,6 @@ export default class Trello {
   #storage = new Storage()
   #cards = this.#storage.loadCards() ?? exampleDataCards ?? { first: [], second: [], third: [] }
   #app
-  #timer
   #element
   #columns
   #textarea
@@ -19,6 +18,8 @@ export default class Trello {
   #btnHidden
   #formAddCard
   #columnsArray
+  #timerMessage
+  #timerTextarea
   #currentColumn
 
   /**
@@ -43,6 +44,7 @@ export default class Trello {
     this.#addEventsListeners()
 
     this.#renderCards()
+    this.#storage.loadTextarea() && this.#restoreTextarea()
   }
 
   /**
@@ -65,6 +67,24 @@ export default class Trello {
   }
 
   /**
+   * Restores the textarea from localStorage.
+   *
+   * @return {void} This function does not return anything.
+   */
+  #restoreTextarea() {
+    const { id, textarea } = this.#storage.loadTextarea()
+
+    if (!id || !textarea) return
+
+    const currentColumn = this.#columnsArray.find((el) => el.id === id)
+    const btnAdd = currentColumn.querySelector('[class*="add-card__button-add"]')
+    this.#openFormAddCard(btnAdd)
+    this.#textarea.value = textarea
+
+    this.#storage.saveTextarea(id, textarea)
+  }
+
+  /**
    * Handles events.
    * Depending on the clicked element, calls handlers
    *
@@ -76,29 +96,39 @@ export default class Trello {
 
     if (!btn.closest('button')) return
 
-    this.#setCurrentsParams(btn)
-
     if (btn.closest('[class*="add-card__button-add"]')) {
       this.#openFormAddCard(btn)
+      return
     }
+
+    this.#setCurrentsParams(btn)
 
     if (btn.closest('button[type="reset"]')) {
       this.#closeFormAddCard()
+      return
     }
 
     if (btn.closest('button[type="submit"]')) {
       this.#submitFormAddCard(event)
+      return
     }
 
     if (btn.closest('[class*="card__button-delete"]')) {
       this.#deleteCard(btn)
+      return
     }
+
+    return
   }
 
+  /**
+   * Sets the current column and id.
+   * @param {HTMLElement} btn - The button element.
+   * @return {void} This function does not return anything.
+   */
   #setCurrentsParams(btn) {
     this.#currentColumn = btn.closest('[id*="column"]')
     this.#currentId = this.#currentColumn.id.replace(/column-/, '')
-    console.log('🚀 ~ this.#currentColumn:', this.#currentId)
   }
 
   /**
@@ -106,6 +136,7 @@ export default class Trello {
    */
   #openFormAddCard(btn) {
     this.#closeFormAddCard()
+    this.#setCurrentsParams(btn)
     this.#addFormAddCard()
 
     const containerFormAddCard = this.#getFormContainer(btn)
@@ -152,6 +183,7 @@ export default class Trello {
    */
   #addFormListeners() {
     this.#formAddCard.addEventListener('keydown', this.#onKeyDownForm)
+    this.#formAddCard.addEventListener('input', this.#onInputForm)
   }
 
   /**
@@ -166,6 +198,17 @@ export default class Trello {
   }
 
   /**
+   * Saves the textarea value to localStorage.
+   */
+  #onInputForm = () => {
+    this.#timerTextarea && clearTimeout(this.#timerTextarea)
+
+    this.#timerTextarea = setTimeout(() => {
+      this.#storage.saveTextarea(this.#currentColumn.id, this.#textarea.value)
+    }, 300)
+  }
+
+  /**
    * Closes the form add card.
    */
   #closeFormAddCard() {
@@ -174,6 +217,8 @@ export default class Trello {
     this.#currentColumn = null
     this.#formAddCard = null
     this.#btnHidden = null
+
+    this.#storage.clearTextarea()
   }
 
   #hideBtnAddCard(btn) {
@@ -219,10 +264,10 @@ export default class Trello {
    * Highlights the placeholder in red for 1 second.
    */
   #highlightMessageNoEmptyCard() {
-    this.#timer && clearTimeout(this.#timer)
+    this.#timerMessage && clearTimeout(this.#timerMessage)
     this.#ui.addPlaceholderWarning(this.#textarea)
 
-    this.#timer = setTimeout(() => {
+    this.#timerMessage = setTimeout(() => {
       this.#ui.removePlaceholderWarning(this.#textarea)
     }, 1000)
   }

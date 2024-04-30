@@ -39,10 +39,12 @@ export default class Storage {
   /**
    * Saves the provided textarea to localStorage.
    *
+   * @param {string} id - The id of the textarea.
    * @param {string} textarea - The textarea to save.
+   * @return {void} This function does not return a value.
    */
-  saveTextarea(textarea) {
-    this.#storage.setItem(this.#keyTextarea, JSON.stringify(textarea))
+  saveTextarea(id, textarea) {
+    this.#storage.setItem(this.#keyTextarea, JSON.stringify({ id, textarea }))
   }
 
   /**
@@ -52,5 +54,16 @@ export default class Storage {
    */
   loadTextarea() {
     return JSON.parse(this.#storage.getItem(this.#keyTextarea))
+  }
+
+  /**
+   * Clears the textarea stored in localStorage.
+   *
+   * This function removes the textarea from localStorage by deleting the corresponding key.
+   *
+   * @return {void} This function does not return a value.
+   */
+  clearTextarea() {
+    this.#storage.removeItem(this.#keyTextarea)
   }
 }
