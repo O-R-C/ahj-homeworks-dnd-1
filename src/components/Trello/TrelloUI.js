@@ -41,4 +41,8 @@ export default class TrelloUI {
   getCard(text) {
     return card(text)
   }
+
+  toggleFormAddCard(form) {
+    form.classList.toggle(styles['form-add-card--active'])
+  }
 }

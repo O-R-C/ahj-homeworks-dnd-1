@@ -12,10 +12,11 @@ export const formAddCard = () => {
   const textarea = getElement({
     tag: 'textarea',
     rows: 5,
-    classes: styles['form-add-card__textarea'],
-    autofocus: true,
-    placeholder: 'Enter a title for this card...',
     required: true,
+    autofocus: true,
+    name: 'textToCard',
+    classes: styles['form-add-card__textarea'],
+    placeholder: 'Enter a title for this card...',
   })
   const controls = getElement({ tag: 'div', classes: styles['form-add-card__controls'] })
   const buttonAdd = getElement({

@@ -27,7 +27,16 @@ export default class Trello {
   }
 
   #onClickColumns = (event) => {
-    const target = event.target
-    console.log('🚀 ~ target:', target)
+    const btn = event.target
+
+    if (btn.closest('[class*="add-card__button-add--QLXgs"]')) {
+      this.#openFormAddCard(btn)
+    }
+  }
+
+  #openFormAddCard(btn) {
+    const controlEl = btn.closest('div[class*="add-card"]')
+    const form = controlEl.querySelector('[class*="form-add-card"]')
+    this.#ui.toggleFormAddCard(form)
   }
 }
