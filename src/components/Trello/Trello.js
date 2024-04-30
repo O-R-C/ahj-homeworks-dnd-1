@@ -48,11 +48,12 @@ export default class Trello {
 
     this.#currentColumn = parent.closest('[class*="column"]')
     this.#formAddCard = this.#ui.getFormAddCard()
-    this.#btnHidden = btn
-
-    this.#toggleBtnAddCard()
 
     containerFormAddCard.append(this.#formAddCard)
+    this.#formAddCard.textToCard.focus()
+
+    this.#btnHidden = btn
+    this.#toggleBtnAddCard()
   }
 
   #closeFormAddCard() {
