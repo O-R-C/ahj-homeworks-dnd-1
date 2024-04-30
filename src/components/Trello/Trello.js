@@ -10,10 +10,20 @@ export default class Trello {
   #formAddCard
   #currentColumn
 
+  /**
+   * Initializes the constructor with the provided element.
+   *
+   * @param {any} element - The element to be used in the constructor.
+   */
   constructor(element) {
     this.#element = this.#ui.getElement(element)
   }
 
+  /**
+   * Initializes the app.
+   *
+   * @return {void} This function does not return anything.
+   */
   init() {
     this.#app = this.#ui.app
     this.#element.append(this.#app)
@@ -22,14 +32,31 @@ export default class Trello {
     this.#addEventsListeners()
   }
 
+  /**
+   * Adds elements.
+   *
+   * @return {void} This function does not return anything.
+   */
   #addElements() {
     this.#columns = this.#app.querySelector('[class*="columns"]')
   }
 
+  /**
+   * Adds events listeners.
+   *
+   * @return {void} This function does not return anything.
+   */
   #addEventsListeners() {
     this.#columns.addEventListener('click', this.#onClickColumns)
   }
 
+  /**
+   * Handles events.
+   * Depending on the clicked element, calls handlers
+   *
+   * @param {Event} event - The event object.
+   * @return {void} This function does not return anything.
+   */
   #onClickColumns = (event) => {
     const btn = event.target
 
@@ -46,6 +73,9 @@ export default class Trello {
     }
   }
 
+  /**
+   * Opens the form add card.
+   */
   #openFormAddCard(btn) {
     this.#closeFormAddCard()
     const parent = btn.closest('div[class*="add-card"]')
@@ -62,6 +92,9 @@ export default class Trello {
     this.#toggleBtnAddCard()
   }
 
+  /**
+   * Closes the form add card.
+   */
   #closeFormAddCard() {
     this.#formAddCard && this.#formAddCard.remove()
     this.#btnHidden && this.#toggleBtnAddCard(this.#btnHidden)
@@ -70,10 +103,18 @@ export default class Trello {
     this.#btnHidden = null
   }
 
+  /**
+   * Toggles the visibility of the add card button by adding or removing the 'hide' class from its classList.
+   */
   #toggleBtnAddCard() {
     this.#ui.toggleBtnHidden(this.#btnHidden)
   }
 
+  /**
+   * Handles the submit event of the form.
+   *
+   * @param {Event} e - The submit event.
+   */
   #submitFormAddCard(e) {
     e.preventDefault()
 
@@ -90,10 +131,16 @@ export default class Trello {
     this.#closeFormAddCard()
   }
 
+  /**
+   * Displays a message when the textarea is empty.
+   */
   #showMessageNoEmptyCard() {
     this.#textarea.placeholder = 'Please, write something'
   }
 
+  /**
+   * Highlights the placeholder in red for 1 second.
+   */
   #highlightMessageNoEmptyCard() {
     this.#ui.togglePlaceholderColor(this.#textarea)
     setTimeout(() => {
