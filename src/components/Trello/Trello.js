@@ -2,6 +2,9 @@ import TrelloUI from './TrelloUI'
 import Card from '@/js/Classes/Card'
 import exampleDataCards from '@/js/exampleDataCards'
 
+/**
+ * The Trello class.
+ */
 export default class Trello {
   #ui = new TrelloUI()
   #cards = exampleDataCards ?? { first: [], second: [], third: [] }
@@ -106,12 +109,32 @@ export default class Trello {
 
     this.#formAddCard = this.#ui.getFormAddCard()
 
+    this.#addFormListeners()
+
     containerFormAddCard.append(this.#formAddCard)
     this.#textarea = this.#formAddCard.textToCard
     this.#textarea.focus()
 
     this.#btnHidden = btn
     this.#toggleBtnAddCard()
+  }
+
+  /**
+   * Adds event listeners to the form add card.
+   */
+  #addFormListeners() {
+    this.#formAddCard.addEventListener('keydown', this.#onKeyDownForm)
+  }
+
+  /**
+   * Closes the form add card if the escape key is pressed.
+   *
+   * @param {Event} event - The keydown event.
+   */
+  #onKeyDownForm = (event) => {
+    if (event.key === 'Escape') {
+      this.#closeFormAddCard()
+    }
   }
 
   /**
