@@ -8,7 +8,7 @@
 }
 
 .add-card__button-add {
-  width: 100%;
+  width: fit-content;
   cursor: pointer;
 
   border: none;

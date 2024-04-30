@@ -35,5 +35,5 @@ export default [
       files: ['**/*.test.js'],
       rules: { 'jest/prefer-expect-assertions': 'off' },
     })),
-  { ignores: ['dist\r', 'coverage\r', 'doc\r', 'webpack.*.js\r', 'node_modules\r', 'bin\r', 'build\r'] },
+  { ignores: ['dist/*', 'coverage/*', 'doc/*', 'webpack.*.js/*', 'node_modules/*', 'bin/*', 'build/*', '.idea/*'] },
 ]
