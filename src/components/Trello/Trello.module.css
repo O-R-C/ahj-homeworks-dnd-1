@@ -14,3 +14,11 @@
 .hide {
   display: none;
 }
+
+.warning {
+  color: red;
+}
+
+.warning::placeholder {
+  color: red;
+}

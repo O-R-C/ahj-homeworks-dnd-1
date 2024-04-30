@@ -61,4 +61,14 @@ export default class TrelloUI {
   toggleBtnHidden(btn) {
     btn.classList.toggle(styles.hide)
   }
+
+  /**
+   * Toggles the 'placeholder-warning' class on the provided element's classList.
+   *
+   * @param {HTMLElement} element - The element to toggle the class on.
+   * @return {void} This function does not return anything.
+   */
+  togglePlaceholderColor(element) {
+    element.classList.toggle(styles['warning'])
+  }
 }

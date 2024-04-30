@@ -5,6 +5,7 @@ export default class Trello {
   #app
   #element
   #columns
+  #textarea
   #btnHidden
   #formAddCard
   #currentColumn
@@ -39,6 +40,10 @@ export default class Trello {
     if (btn.closest('button[type="reset"]')) {
       this.#closeFormAddCard()
     }
+
+    if (btn.closest('button[type="submit"]')) {
+      this.#submitFormAddCard(event)
+    }
   }
 
   #openFormAddCard(btn) {
@@ -50,7 +55,8 @@ export default class Trello {
     this.#formAddCard = this.#ui.getFormAddCard()
 
     containerFormAddCard.append(this.#formAddCard)
-    this.#formAddCard.textToCard.focus()
+    this.#textarea = this.#formAddCard.textToCard
+    this.#textarea.focus()
 
     this.#btnHidden = btn
     this.#toggleBtnAddCard()
@@ -66,5 +72,32 @@ export default class Trello {
 
   #toggleBtnAddCard() {
     this.#ui.toggleBtnHidden(this.#btnHidden)
+  }
+
+  #submitFormAddCard(e) {
+    e.preventDefault()
+
+    const text = this.#textarea.value
+
+    if (!text) {
+      this.#showMessageNoEmptyCard()
+      this.#highlightMessageNoEmptyCard()
+      return
+    }
+
+    const content = this.#currentColumn.querySelector('[class*="column-content"]')
+    content.append(this.#ui.getCard(text))
+    this.#closeFormAddCard()
+  }
+
+  #showMessageNoEmptyCard() {
+    this.#textarea.placeholder = 'Please, write something'
+  }
+
+  #highlightMessageNoEmptyCard() {
+    this.#ui.togglePlaceholderColor(this.#textarea)
+    setTimeout(() => {
+      this.#ui.togglePlaceholderColor(this.#textarea)
+    }, 1000)
   }
 }
