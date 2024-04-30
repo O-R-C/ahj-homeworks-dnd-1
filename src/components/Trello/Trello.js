@@ -5,6 +5,9 @@ export default class Trello {
   #app
   #element
   #columns
+  #btnHidden
+  #formAddCard
+  #currentColumn
 
   constructor(element) {
     this.#element = this.#ui.getElement(element)
@@ -29,14 +32,38 @@ export default class Trello {
   #onClickColumns = (event) => {
     const btn = event.target
 
-    if (btn.closest('[class*="add-card__button-add--QLXgs"]')) {
+    if (btn.closest('[class*="add-card__button-add"]')) {
       this.#openFormAddCard(btn)
+    }
+
+    if (btn.closest('button[type="reset"]')) {
+      this.#closeFormAddCard()
     }
   }
 
   #openFormAddCard(btn) {
-    const controlEl = btn.closest('div[class*="add-card"]')
-    const form = controlEl.querySelector('[class*="form-add-card"]')
-    this.#ui.toggleFormAddCard(form)
+    this.#closeFormAddCard()
+    const parent = btn.closest('div[class*="add-card"]')
+    const containerFormAddCard = parent.querySelector('[class*="form-container"]')
+
+    this.#currentColumn = parent.closest('[class*="column"]')
+    this.#formAddCard = this.#ui.getFormAddCard()
+    this.#btnHidden = btn
+
+    this.#toggleBtnAddCard()
+
+    containerFormAddCard.append(this.#formAddCard)
+  }
+
+  #closeFormAddCard() {
+    this.#formAddCard && this.#formAddCard.remove()
+    this.#btnHidden && this.#toggleBtnAddCard(this.#btnHidden)
+    this.#currentColumn = null
+    this.#formAddCard = null
+    this.#btnHidden = null
+  }
+
+  #toggleBtnAddCard() {
+    this.#ui.toggleBtnHidden(this.#btnHidden)
   }
 }

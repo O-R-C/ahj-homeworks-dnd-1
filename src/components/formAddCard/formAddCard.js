@@ -21,11 +21,13 @@ export const formAddCard = () => {
   const controls = getElement({ tag: 'div', classes: styles['form-add-card__controls'] })
   const buttonAdd = getElement({
     tag: 'button',
+    type: 'submit',
     textContent: 'Add card',
-    classes: styles['form-add-card__button-add'],
+    classes: styles['form-add-card__button-submit'],
   })
   const buttonCancel = getElement({
     tag: 'button',
+    type: 'reset',
     classes: styles['form-add-card__button-cancel'],
   })
 

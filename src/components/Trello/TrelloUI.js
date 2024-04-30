@@ -1,6 +1,7 @@
 import getElement from '@/js/getElement'
 import card from '@/components/card/card'
 import columns from '@components/columns/columns'
+import formAddCard from '@components/formAddCard/formAddCard'
 
 import styles from './Trello.module.css'
 
@@ -42,7 +43,22 @@ export default class TrelloUI {
     return card(text)
   }
 
-  toggleFormAddCard(form) {
-    form.classList.toggle(styles['form-add-card--active'])
+  /**
+   * Returns the result of calling the `formAddCard` function.
+   *
+   * @return {HTMLElement} The result of calling the `formAddCard` function.
+   */
+  getFormAddCard() {
+    return formAddCard()
+  }
+
+  /**
+   * Toggles the visibility of a button element by adding or removing the 'hide' class from its classList.
+   *
+   * @param {HTMLElement} btn - The button element to toggle visibility for.
+   * @return {void} This function does not return anything.
+   */
+  toggleBtnHidden(btn) {
+    btn.classList.toggle(styles.hide)
   }
 }

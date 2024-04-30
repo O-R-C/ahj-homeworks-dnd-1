@@ -20,4 +20,3 @@
 .column-third {
   grid-column: 3 / 4;
 }
-git add . && git commit -m 'feat: add columns'

@@ -2,7 +2,7 @@
 @value shadow, colorMain from values;
 
 .form-add-card {
-  display: none;
+  display: flex;
   flex-direction: column;
   gap: 10px;
 }
@@ -28,7 +28,7 @@
   font: 1em sans-serif;
 }
 
-.form-add-card__button-add {
+.form-add-card__button-submit {
   width: 40%;
   cursor: pointer;
 
@@ -39,7 +39,7 @@
   font: inherit;
 }
 
-.form-add-card__button-add:hover {
+.form-add-card__button-submit:hover {
   color: green;
 }
 

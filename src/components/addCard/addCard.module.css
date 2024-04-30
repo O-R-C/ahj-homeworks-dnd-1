@@ -7,6 +7,10 @@
   gap: 10px;
 }
 
+.add-card__form-container {
+  width: 100%;
+}
+
 .add-card__button-add {
   width: fit-content;
   cursor: pointer;
