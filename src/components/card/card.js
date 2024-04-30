@@ -10,3 +10,5 @@ export const card = (textContent = 'Awesome text') => {
 
   return card
 }
+
+export default card
