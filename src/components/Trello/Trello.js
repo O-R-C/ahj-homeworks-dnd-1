@@ -1,9 +1,10 @@
 import TrelloUI from './TrelloUI'
 import Card from '@/js/Classes/Card'
+import exampleDataCards from '@/js/exampleDataCards'
 
 export default class Trello {
   #ui = new TrelloUI()
-  #cards = { first: [], second: [], third: [] }
+  #cards = exampleDataCards ?? { first: [], second: [], third: [] }
   #app
   #timer
   #element
@@ -34,6 +35,8 @@ export default class Trello {
 
     this.#addElements()
     this.#addEventsListeners()
+
+    this.#renderCards()
   }
 
   /**
@@ -160,7 +163,7 @@ export default class Trello {
    * @param {string} text - The text to be saved in the card.
    */
   #saveCard(text) {
-    this.#cards[this.#currentColumn.id.replace(/column-/, '')].push(new Card(text, this.#currentColumn.id))
+    this.#cards[this.#currentColumn.id.replace(/column-/, '')].push(new Card(text))
 
     this.#renderCards()
   }
