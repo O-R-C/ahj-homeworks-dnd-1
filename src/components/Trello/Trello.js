@@ -14,14 +14,15 @@ export default class Trello {
     this.#app = this.#ui.app
     this.#element.append(this.#app)
 
-    this.addElements()
+    this.#addElements()
+    this.#addEventsListeners()
   }
 
-  addElements() {
+  #addElements() {
     this.#columns = this.#app.querySelector('[class*="columns"]')
   }
 
-  addEventsListeners() {
+  #addEventsListeners() {
     this.#columns.addEventListener('click', this.#onClickColumns)
   }
 
