@@ -135,7 +135,7 @@ export default class Trello {
    * Displays a message when the textarea is empty.
    */
   #showMessageNoEmptyCard() {
-    this.#textarea.placeholder = 'Please, write something'
+    this.#textarea.placeholder = 'Please, write something here...'
   }
 
   /**
