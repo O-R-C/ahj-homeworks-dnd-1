@@ -6,6 +6,7 @@ export default class Trello {
   #element
   #columns
   #textarea
+  #timer
   #btnHidden
   #formAddCard
   #currentColumn
@@ -142,9 +143,11 @@ export default class Trello {
    * Highlights the placeholder in red for 1 second.
    */
   #highlightMessageNoEmptyCard() {
-    this.#ui.togglePlaceholderColor(this.#textarea)
-    setTimeout(() => {
-      this.#ui.togglePlaceholderColor(this.#textarea)
+    this.#timer && clearTimeout(this.#timer)
+    this.#ui.addPlaceholderWarning(this.#textarea)
+
+    this.#timer = setTimeout(() => {
+      this.#ui.removePlaceholderWarning(this.#textarea)
     }, 1000)
   }
 }

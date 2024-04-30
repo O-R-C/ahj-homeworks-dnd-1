@@ -63,12 +63,22 @@ export default class TrelloUI {
   }
 
   /**
-   * Toggles the 'placeholder-warning' class on the provided element's classList.
+   * Adds the 'warning' class to the provided element's classList.
    *
-   * @param {HTMLElement} element - The element to toggle the class on.
+   * @param {HTMLElement} element - The element to add the class to.
    * @return {void} This function does not return anything.
    */
-  togglePlaceholderColor(element) {
-    element.classList.toggle(styles['warning'])
+  addPlaceholderWarning(element) {
+    element.classList.add(styles['warning'])
+  }
+
+  /**
+   * Removes the 'placeholder-warning' class from the provided element's classList.
+   *
+   * @param {HTMLElement} element - The element to remove the class from.
+   * @return {void} This function does not return anything.
+   */
+  removePlaceholderWarning(element) {
+    element.classList.remove(styles['warning'])
   }
 }
