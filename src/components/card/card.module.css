@@ -1,15 +1,48 @@
 @value values: '@/css/variables.module.css';
-@value shadow, radius from values;
+@value shadow, radius, padding, colorSecondary from values;
 
 .card {
-  padding: 10px;
+  padding: padding;
   border-radius: radius;
   box-shadow: shadow;
 
   background: #fff;
+
+  font-size: 1rem;
+
+  position: relative;
 }
 
 .card__paragraph {
   margin: 0;
   white-space: pre-wrap;
+}
+
+.card__button-delete {
+  position: absolute;
+  top: calc(padding * 0.5);
+  right: calc(padding * 0.5);
+
+  visibility: hidden;
+  opacity: 0;
+  transition:
+    visibility 0s,
+    opacity 0.5s linear;
+
+  padding: 5px;
+
+  font-size: inherit;
+
+  border: none;
+  border-top-right-radius: radius;
+  border-bottom-left-radius: radius;
+  background: colorSecondary;
+  cursor: pointer;
+}
+
+.card:hover .card__button-delete {
+  visibility: visible;
+  opacity: 1;
+  background: red;
+  color: white;
 }
