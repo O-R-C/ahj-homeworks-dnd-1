@@ -9,7 +9,7 @@ import exampleDataCards from '@/js/exampleDataCards'
 export default class Trello {
   #ui = new TrelloUI()
   #storage = new Storage()
-  #cards = this.#storage.load() ?? exampleDataCards ?? { first: [], second: [], third: [] }
+  #cards = this.#storage.loadCards() ?? exampleDataCards ?? { first: [], second: [], third: [] }
   #app
   #timer
   #element
@@ -203,7 +203,7 @@ export default class Trello {
    */
   #saveCard(text) {
     this.#cards[this.#currentId].push(new Card(text))
-    this.#storage.save(this.#cards)
+    this.#storage.saveCards(this.#cards)
 
     this.#renderCards()
   }
@@ -256,7 +256,7 @@ export default class Trello {
 
     this.#cards[this.#currentId] = this.#cards[this.#currentId].filter((card) => card.id !== id)
 
-    this.#storage.save(this.#cards)
+    this.#storage.saveCards(this.#cards)
 
     this.#renderCards()
   }

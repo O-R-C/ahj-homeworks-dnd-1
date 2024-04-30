@@ -12,21 +12,21 @@ export default class Storage {
    * The key for storing the cards in localStorage.
    * @private
    */
-  #key = 'cards'
+  #keyCards = 'cards'
 
   /**
    * Saves the provided cards to localStorage.
    * @param {Array} cards - The array of cards to save.
    */
-  save(cards) {
-    this.#storage.setItem(this.#key, JSON.stringify(cards))
+  saveCards(cards) {
+    this.#storage.setItem(this.#keyCards, JSON.stringify(cards))
   }
 
   /**
    * Retrieves the saved cards from localStorage.
    * @return {Array} The array of saved cards.
    */
-  load() {
-    return JSON.parse(this.#storage.getItem(this.#key))
+  loadCards() {
+    return JSON.parse(this.#storage.getItem(this.#keyCards))
   }
 }
