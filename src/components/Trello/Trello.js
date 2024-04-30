@@ -10,6 +10,7 @@ export default class Trello {
   #element
   #columns
   #textarea
+  #currentId
   #btnHidden
   #formAddCard
   #columnsArray
@@ -68,6 +69,10 @@ export default class Trello {
   #onClickColumns = (event) => {
     const btn = event.target
 
+    if (!btn.closest('button')) return
+
+    this.#setCurrentsParams(btn)
+
     if (btn.closest('[class*="add-card__button-add"]')) {
       this.#openFormAddCard(btn)
     }
@@ -79,6 +84,16 @@ export default class Trello {
     if (btn.closest('button[type="submit"]')) {
       this.#submitFormAddCard(event)
     }
+
+    if (btn.closest('[class*="card__button-delete"]')) {
+      this.#deleteCard(btn)
+    }
+  }
+
+  #setCurrentsParams(btn) {
+    this.#currentColumn = btn.closest('[id*="column"]')
+    this.#currentId = this.#currentColumn.id.replace(/column-/, '')
+    console.log('🚀 ~ this.#currentColumn:', this.#currentId)
   }
 
   /**
@@ -89,7 +104,6 @@ export default class Trello {
     const parent = btn.closest('div[class*="add-card"]')
     const containerFormAddCard = parent.querySelector('[class*="form-container"]')
 
-    this.#currentColumn = parent.closest('[class*="column"]')
     this.#formAddCard = this.#ui.getFormAddCard()
 
     containerFormAddCard.append(this.#formAddCard)
@@ -163,7 +177,7 @@ export default class Trello {
    * @param {string} text - The text to be saved in the card.
    */
   #saveCard(text) {
-    this.#cards[this.#currentColumn.id.replace(/column-/, '')].push(new Card(text))
+    this.#cards[this.#currentId].push(new Card(text))
 
     this.#renderCards()
   }
@@ -182,7 +196,7 @@ export default class Trello {
       const cardsInColumn = this.#cards[column.id.replace(/column-/, '')]
 
       cardsInColumn.forEach((card) => {
-        columnContent.append(this.#ui.getCard(card.textContent))
+        columnContent.append(this.#ui.getCard(card.id, card.textContent))
       })
     })
   }
@@ -203,5 +217,19 @@ export default class Trello {
    */
   #resetColumn(column) {
     column.querySelector('[class*="column-content"]').innerHTML = ''
+  }
+
+  /**
+   * Deletes the card.
+   *
+   * @param {HTMLElement} btn - The button that was clicked.
+   */
+  #deleteCard(btn) {
+    const card = btn.closest('[class*="card"]')
+    const id = card.dataset.id
+
+    this.#cards[this.#currentId] = this.#cards[this.#currentId].filter((card) => card.id !== id)
+
+    this.#renderCards()
   }
 }

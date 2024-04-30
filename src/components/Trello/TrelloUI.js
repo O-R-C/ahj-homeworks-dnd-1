@@ -36,11 +36,12 @@ export default class TrelloUI {
   /**
    * Returns a card element with the provided text.
    *
+   * @param {string} id - The id of the card.
    * @param {string} text - The text to be displayed in the card.
    * @return {HTMLElement} The card element.
    */
-  getCard(text) {
-    return card(text)
+  getCard(id, text) {
+    return card(id, text)
   }
 
   /**
