@@ -106,19 +106,45 @@ export default class Trello {
    */
   #openFormAddCard(btn) {
     this.#closeFormAddCard()
-    const parent = btn.closest('div[class*="add-card"]')
-    const containerFormAddCard = parent.querySelector('[class*="form-container"]')
+    this.#addFormAddCard()
 
-    this.#formAddCard = this.#ui.getFormAddCard()
-
-    this.#addFormListeners()
-
+    const containerFormAddCard = this.#getFormContainer(btn)
     containerFormAddCard.append(this.#formAddCard)
+    this.#formAddCardInit()
+
+    this.#hideBtnAddCard(btn)
+  }
+
+  /**
+   * Returns the form container element.
+   *
+   * @param {HTMLElement} btn - The button element.
+   * @return {HTMLElement} The form container element.
+   */
+  #getFormContainer(btn) {
+    const parent = btn.closest('div[class*="add-card"]')
+    return parent.querySelector('[class*="form-container"]')
+  }
+
+  /**
+   * Adds the form add card.
+   *
+   * @return {void} This function does not return anything.
+   */
+  #addFormAddCard() {
+    this.#formAddCard = this.#ui.getFormAddCard()
+  }
+
+  /**
+   * Initializes the form add card.
+   *
+   * @return {void} This function does not return anything.
+   */
+  #formAddCardInit() {
     this.#textarea = this.#formAddCard.textToCard
     this.#textarea.focus()
 
-    this.#btnHidden = btn
-    this.#toggleBtnAddCard()
+    this.#addFormListeners()
   }
 
   /**
@@ -148,6 +174,11 @@ export default class Trello {
     this.#currentColumn = null
     this.#formAddCard = null
     this.#btnHidden = null
+  }
+
+  #hideBtnAddCard(btn) {
+    this.#btnHidden = btn
+    this.#toggleBtnAddCard()
   }
 
   /**
