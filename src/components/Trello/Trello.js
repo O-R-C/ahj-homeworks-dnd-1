@@ -1,5 +1,6 @@
 import TrelloUI from './TrelloUI'
 import Card from '@/js/Classes/Card'
+import Storage from '@/js/Classes/Storage'
 import exampleDataCards from '@/js/exampleDataCards'
 
 /**
@@ -7,7 +8,8 @@ import exampleDataCards from '@/js/exampleDataCards'
  */
 export default class Trello {
   #ui = new TrelloUI()
-  #cards = exampleDataCards ?? { first: [], second: [], third: [] }
+  #storage = new Storage()
+  #cards = this.#storage.load() ?? exampleDataCards ?? { first: [], second: [], third: [] }
   #app
   #timer
   #element
@@ -201,6 +203,7 @@ export default class Trello {
    */
   #saveCard(text) {
     this.#cards[this.#currentId].push(new Card(text))
+    this.#storage.save(this.#cards)
 
     this.#renderCards()
   }
@@ -252,6 +255,8 @@ export default class Trello {
     const id = card.dataset.id
 
     this.#cards[this.#currentId] = this.#cards[this.#currentId].filter((card) => card.id !== id)
+
+    this.#storage.save(this.#cards)
 
     this.#renderCards()
   }
