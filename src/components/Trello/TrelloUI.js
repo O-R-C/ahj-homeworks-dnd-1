@@ -25,7 +25,7 @@ export default class TrelloUI {
    */
   get app() {
     const app = getElement({ classes: styles.app, tag: 'div' })
-    const columnsEl = columns('columns')
+    const columnsEl = columns(styles.columns)
 
     app.append(columnsEl)
 

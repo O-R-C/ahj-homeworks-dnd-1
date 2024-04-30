@@ -1,5 +1,5 @@
 import getElement from '@/js/getElement'
-import formAddCard from './formAddCard'
+import formAddCard from '../formAddCard/formAddCard'
 
 import styles from './addCard.module.css'
 
