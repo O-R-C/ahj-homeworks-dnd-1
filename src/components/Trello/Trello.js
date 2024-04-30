@@ -1,14 +1,17 @@
 import TrelloUI from './TrelloUI'
+import Card from '@/js/Classes/Card'
 
 export default class Trello {
   #ui = new TrelloUI()
+  #cards = { first: [], second: [], third: [] }
   #app
+  #timer
   #element
   #columns
   #textarea
-  #timer
   #btnHidden
   #formAddCard
+  #columnsArray
   #currentColumn
 
   /**
@@ -40,6 +43,7 @@ export default class Trello {
    */
   #addElements() {
     this.#columns = this.#app.querySelector('[class*="columns"]')
+    this.#columnsArray = [...this.#columns.children]
   }
 
   /**
@@ -127,8 +131,7 @@ export default class Trello {
       return
     }
 
-    const content = this.#currentColumn.querySelector('[class*="column-content"]')
-    content.append(this.#ui.getCard(text))
+    this.#saveCard(text)
     this.#closeFormAddCard()
   }
 
@@ -149,5 +152,53 @@ export default class Trello {
     this.#timer = setTimeout(() => {
       this.#ui.removePlaceholderWarning(this.#textarea)
     }, 1000)
+  }
+
+  /**
+   * Saves the card in this.#cards.
+   *
+   * @param {string} text - The text to be saved in the card.
+   */
+  #saveCard(text) {
+    this.#cards[this.#currentColumn.id.replace(/column-/, '')].push(new Card(text, this.#currentColumn.id))
+
+    this.#renderCards()
+  }
+
+  /**
+   * Renders the cards in the columns.
+   *
+   * This function resets the columns, then iterates over each column and its cards,
+   * rendering each card in the column content.
+   */
+  #renderCards() {
+    this.#resetColumns()
+
+    this.#columnsArray.forEach((column) => {
+      const columnContent = column.querySelector('[class*="column-content"]')
+      const cardsInColumn = this.#cards[column.id.replace(/column-/, '')]
+
+      cardsInColumn.forEach((card) => {
+        columnContent.append(this.#ui.getCard(card.textContent))
+      })
+    })
+  }
+
+  /**
+   * Resets the columns.
+   */
+  #resetColumns() {
+    this.#columnsArray.forEach((column) => {
+      this.#resetColumn(column)
+    })
+  }
+
+  /**
+   * Resets the column.
+   *
+   * @param {HTMLElement} column - The column to be reset.
+   */
+  #resetColumn(column) {
+    column.querySelector('[class*="column-content"]').innerHTML = ''
   }
 }
