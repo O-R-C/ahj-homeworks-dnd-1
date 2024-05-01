@@ -1,4 +1,5 @@
 import TrelloUI from './TrelloUI'
+import DnD from '@/js/Classes/DnD'
 import Card from '@/js/Classes/Card'
 import Storage from '@/js/Classes/Storage'
 import exampleDataCards from '@/js/exampleDataCards'
@@ -10,6 +11,7 @@ export default class Trello {
   #ui = new TrelloUI()
   #storage = new Storage()
   #cards = this.#storage.loadCards() ?? exampleDataCards ?? { first: [], second: [], third: [] }
+  #dnd
   #app
   #element
   #columns
@@ -46,6 +48,8 @@ export default class Trello {
 
     this.#addElements()
     this.#addEventsListeners()
+
+    this.#dnd = new DnD(this.#columns)
 
     this.#renderCards()
     this.#storage.loadTextarea() && this.#restoreTextarea()
