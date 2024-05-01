@@ -29,7 +29,7 @@ export default class DnD {
     this.#ghostCard = this.#draggedCard.cloneNode(true)
 
     this.#setStyles(event)
-    this.#container.prepend(this.#ghostCard)
+    document.body.prepend(this.#ghostCard)
     this.#setActionListeners()
   }
 
@@ -37,16 +37,17 @@ export default class DnD {
     const { top, left } = this.#draggedCard.getBoundingClientRect()
     this.#setDifferentPosition(event, top, left)
     this.#ghostCard.style.width = this.#draggedCard.offsetWidth + 'px'
-    // this.#ghostCard.style['pointer-events'] = 'none'
+    this.#ghostCard.style['pointer-events'] = 'none'
     this.#ghostCard.style['user-select'] = 'none'
     this.#ghostCard.style.position = 'absolute'
     this.#ghostCard.style.cursor = 'grabbing'
-    this.#ghostCard.style.left = `${left}px`
-    this.#ghostCard.style.top = `${top}px`
+    this.#ghostCard.style.left = `${window.scrollX + left}px`
+    this.#ghostCard.style.top = `${window.scrollY + top}px`
     this.#ghostCard.style.zIndex = 9999
   }
 
   #setDifferentPosition = (event, top, left) => {
+    console.log('🚀 ~ event, top, left:', event, top, left)
     this.#diffTop = event.pageY - top
     this.#diffLeft = event.pageX - left
   }
@@ -62,7 +63,7 @@ export default class DnD {
     if (!this.#draggedCard) return
 
     this.#ghostCard.style.left = `${event.pageX - this.#diffLeft}px`
-    this.#ghostCard.style.top = `${event.pageY - this.#diffTop}px`
+    this.#ghostCard.style.top = `${event.pageY - this.#diffTop + window.scrollY}px`
   }
 
   #onMouseLeave = () => {
