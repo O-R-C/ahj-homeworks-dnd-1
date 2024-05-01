@@ -1,12 +1,12 @@
 export default class DnD {
   #draggedCard
   #ghostCard
-  #element
+  #container
   #diffTop
   #diffLeft
 
   constructor(columns) {
-    this.#element = columns
+    this.#container = columns
   }
 
   init() {
@@ -14,11 +14,12 @@ export default class DnD {
   }
 
   #addEventsListeners = () => {
-    this.#element.addEventListener('mousedown', this.#onMouseDown)
+    this.#container.addEventListener('mousedown', this.#onMouseDown)
   }
 
   #onMouseDown = (event) => {
     event.preventDefault()
+    if (event.button !== 0) return
 
     if (event.target.closest('button')) return
 
@@ -27,35 +28,33 @@ export default class DnD {
 
     this.#ghostCard = this.#draggedCard.cloneNode(true)
 
-    this.#setDifferentPosition(event)
     this.#setStyles(event)
-    this.#draggedCard.prepend(this.#ghostCard)
+    this.#container.prepend(this.#ghostCard)
     this.#setActionListeners()
-    console.log('🚀 ~ body:', document.body)
-    console.log('🚀 ~ this.#ghostCard:', this.#ghostCard)
   }
 
   #setStyles = (event) => {
     const { top, left } = this.#draggedCard.getBoundingClientRect()
+    this.#setDifferentPosition(event, top, left)
     this.#ghostCard.style.width = this.#draggedCard.offsetWidth + 'px'
     // this.#ghostCard.style['pointer-events'] = 'none'
     this.#ghostCard.style['user-select'] = 'none'
     this.#ghostCard.style.position = 'absolute'
     this.#ghostCard.style.cursor = 'grabbing'
-    this.#ghostCard.style.left = `${event.pageX - this.#diffLeft}px`
-    this.#ghostCard.style.top = `${event.pageY - this.#diffTop}px`
+    this.#ghostCard.style.left = `${left}px`
+    this.#ghostCard.style.top = `${top}px`
     this.#ghostCard.style.zIndex = 9999
   }
 
-  #setDifferentPosition = (event) => {
-    this.#diffTop = event.pageY - this.#ghostCard.offsetTop
-    this.#diffLeft = event.pageX - this.#ghostCard.offsetLeft
+  #setDifferentPosition = (event, top, left) => {
+    this.#diffTop = event.pageY - top
+    this.#diffLeft = event.pageX - left
   }
 
   #setActionListeners = () => {
-    this.#element.addEventListener('mouseup', this.#onMouseUp)
-    this.#element.addEventListener('mousemove', this.#onMouseMove)
-    this.#element.addEventListener('mouseleave', this.#onMouseLeave)
+    this.#container.addEventListener('mouseup', this.#onMouseUp)
+    this.#container.addEventListener('mousemove', this.#onMouseMove)
+    this.#container.addEventListener('mouseleave', this.#onMouseLeave)
   }
 
   #onMouseMove = (event) => {
@@ -67,6 +66,7 @@ export default class DnD {
   }
 
   #onMouseLeave = () => {
+    console.log('onMouseLeave')
     if (!this.#draggedCard) return
 
     this.#resetDraggedCard()
@@ -99,8 +99,8 @@ export default class DnD {
     this.#draggedCard = null
     this.#ghostCard = null
 
-    this.#element.removeEventListener('mouseup', this.#onMouseUp)
-    this.#element.removeEventListener('mousemove', this.#onMouseMove)
-    this.#element.removeEventListener('mouseleave', this.#onMouseLeave)
+    this.#container.removeEventListener('mouseup', this.#onMouseUp)
+    this.#container.removeEventListener('mousemove', this.#onMouseMove)
+    this.#container.removeEventListener('mouseleave', this.#onMouseLeave)
   }
 }
