@@ -351,6 +351,7 @@ export default class Trello {
     if (!card) return
 
     this.#cardDragged = card
+
     this.#ghostCard = card.cloneNode(true)
     this.#ghostCard.style.width = card.offsetWidth + 'px'
     this.#ui.addDraggedClass(this.#ghostCard)
@@ -360,7 +361,6 @@ export default class Trello {
     const { top, left } = card.getBoundingClientRect()
     this.#ghostCard.style.top = top + 'px'
     this.#ghostCard.style.left = left + 'px'
-    this.#ghostCard.classList.add('grabbing')
 
     this.#setDifferentPosition(event)
 
@@ -380,7 +380,6 @@ export default class Trello {
 
     this.#ghostCard.style.left = `${event.pageX - this.#diffLeft}px`
     this.#ghostCard.style.top = `${event.pageY - this.#diffTop}px`
-    this.#ghostCard.style.cursor = 'grabbing'
   }
 
   #onMouseLeaveColumns = () => {
@@ -399,7 +398,22 @@ export default class Trello {
     this.#columns.removeEventListener('mouseleave', this.#onMouseLeaveColumns)
   }
 
-  #onMouseUpColumns = () => {
+  #onMouseUpColumns = (event) => {
+    if (!this.#cardDragged) return
+
+    const point = document.elementFromPoint(event.clientX, event.clientY)
+    const closestCard = point.closest('[class^="card--"]')
+    if (closestCard) {
+      const closestContent = point.closest('[class*="column-content"]')
+
+      const { top } = closestCard.getBoundingClientRect()
+      if (event.pageY > window.scrollY + top + closestCard.offsetHeight / 2) {
+        closestContent.insertBefore(this.#cardDragged, closestCard.nextElementSibling)
+      } else {
+        closestContent.insertBefore(this.#cardDragged, closestCard)
+      }
+    }
+
     this.#resetDraggedCard()
   }
 }

@@ -90,6 +90,6 @@ export default class TrelloUI {
    * @return {void} This function does not return anything.
    */
   addDraggedClass(element) {
-    element.classList.add(styles.dragged)
+    element.classList.add(styles.dragged, styles['dragging'])
   }
 }

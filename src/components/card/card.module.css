@@ -13,7 +13,6 @@
   position: relative;
 
   cursor: grab;
-  touch-action: none;
 }
 
 .card__paragraph {
