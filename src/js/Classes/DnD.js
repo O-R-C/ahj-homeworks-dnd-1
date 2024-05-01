@@ -5,9 +5,6 @@ export default class DnD {
   #container
   #diffTop
   #diffLeft
-  #parent
-  #sibling
-  #hasSpot = false
 
   constructor(columns) {
     this.#container = columns
@@ -22,7 +19,6 @@ export default class DnD {
   }
 
   #onMouseDown = (event) => {
-    this.#hasSpot = false
     event.preventDefault()
     if (event.button !== 0) return
 
@@ -41,27 +37,20 @@ export default class DnD {
 
     this.#setActionListeners()
 
-    this.#saveCurrentPosition()
     this.#draggedCard.replaceWith(this.#spotCard)
-  }
-
-  #saveCurrentPosition = () => {
-    this.#parent = this.#draggedCard.closest('[data-id="column-content"]')
-    this.#sibling = this.#draggedCard.nextElementSibling
-  }
-
-  #restoreCurrentPosition = () => {
-    this.#parent.insertBefore(this.#draggedCard, this.#sibling)
   }
 
   #setStylesGhost = (event) => {
     const { top, left } = this.#draggedCard.getBoundingClientRect()
     this.#setDifferentPosition(event, top, left)
+
     this.#ghostCard.style.width = this.#draggedCard.offsetWidth + 'px'
+    this.#ghostCard.style.height = this.#draggedCard.offsetHeight + 'px'
     this.#ghostCard.style['pointer-events'] = 'none'
     this.#ghostCard.style['user-select'] = 'none'
     this.#ghostCard.style.position = 'absolute'
     this.#ghostCard.style.cursor = 'grabbing'
+    this.#ghostCard.style.transform = 'rotate(-3deg)'
     this.#ghostCard.style.left = `${window.scrollX + left}px`
     this.#ghostCard.style.top = `${window.scrollY + top}px`
     this.#ghostCard.style.opacity = 0.5
@@ -72,12 +61,12 @@ export default class DnD {
     this.#spotCard.style.width = this.#draggedCard.offsetWidth + 'px'
     this.#spotCard.style.height = this.#draggedCard.offsetHeight + 'px'
 
-    this.#spotCard.style.backgroundColor = 'gray'
+    this.#spotCard.style.backgroundColor = '#b3b3b3'
   }
 
   #setDifferentPosition = (event, top, left) => {
-    this.#diffTop = event.pageY - top
-    this.#diffLeft = event.pageX - left
+    this.#diffTop = event.pageY - top - window.scrollY
+    this.#diffLeft = event.pageX - left - window.scrollX
   }
 
   #setActionListeners = () => {
@@ -92,28 +81,28 @@ export default class DnD {
     if (!this.#draggedCard) return
 
     this.#ghostCard.style.left = `${event.pageX - this.#diffLeft}px`
-    this.#ghostCard.style.top = `${event.pageY - this.#diffTop + window.scrollY}px`
+    this.#ghostCard.style.top = `${event.pageY - this.#diffTop}px`
   }
 
   #onMouseLeave = () => {
-    console.log('onMouseLeave')
     if (!this.#draggedCard) return
 
-    this.#spotCard.replaceWith(this.#draggedCard)
+    this.#dropCard()
     this.#resetDraggedCard()
   }
 
   #onMouseUp = () => {
     if (!this.#draggedCard) return
 
-    // this.#hasSpot && this.#spotCard.replaceWith(this.#draggedCard)
-    // !this.#hasSpot && this.#restoreCurrentPosition()
-
-    this.#spotCard.replaceWith(this.#draggedCard)
+    this.#dropCard()
     this.#resetDraggedCard()
   }
 
-  #dropCard = (closestCard, currentY, card) => {
+  #dropCard = () => {
+    this.#spotCard.replaceWith(this.#draggedCard)
+  }
+
+  #showSpot = (closestCard, currentY, card) => {
     const { top } = closestCard.getBoundingClientRect()
     const closestContent = closestCard.closest('[data-id="column-content"]')
 
@@ -140,21 +129,17 @@ export default class DnD {
   #onGhostCardOver = (event) => {
     if (!this.#draggedCard) return
 
-    this.#hasSpot = false
-
     const closestContent = event.target.closest('[data-id="column-content"]')
     const closestCard = event.target.closest('[data-id="card"]')
 
     if (closestContent && !this.#hasCards(closestContent)) {
-      this.#hasSpot = true
       closestContent.insertBefore(this.#spotCard, closestCard)
       return
     }
 
     if (!closestCard) return
 
-    this.#hasSpot = true
-    this.#dropCard(closestCard, event.pageY, this.#spotCard)
+    this.#showSpot(closestCard, event.pageY, this.#spotCard)
   }
 
   #hasCards = (content) => {
