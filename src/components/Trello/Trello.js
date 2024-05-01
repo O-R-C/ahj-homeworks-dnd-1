@@ -13,6 +13,8 @@ export default class Trello {
   #app
   #element
   #columns
+  #diffTop
+  #diffLeft
   #textarea
   #currentId
   #btnHidden
@@ -66,10 +68,7 @@ export default class Trello {
    */
   #addEventsListeners() {
     this.#columns.addEventListener('click', this.#onClickColumns)
-    this.#columns.addEventListener('mouseup', this.#onMouseUpColumns)
     this.#columns.addEventListener('mousedown', this.#onMouseDownColumns)
-    this.#columns.addEventListener('mousemove', this.#onMouseMoveColumns)
-    this.#columns.addEventListener('mouseleave', this.#onMouseLeaveColumns)
   }
 
   /**
@@ -346,39 +345,61 @@ export default class Trello {
   #onMouseDownColumns = (event) => {
     event.preventDefault()
 
-    const card = event.target.closest('[class*="card--"]')
+    if (event.target.closest('button')) return
+
+    const card = event.target.closest('[class^="card--"]')
     if (!card) return
 
     this.#cardDragged = card
     this.#ghostCard = card.cloneNode(true)
+    this.#ghostCard.style.width = card.offsetWidth + 'px'
     this.#ui.addDraggedClass(this.#ghostCard)
 
-    document.body.append(this.#ghostCard)
-    this.#ghostCard.style.width = card.offsetWidth + 'px'
+    this.#element.prepend(this.#ghostCard)
 
-    this.#setGhostCardPosition(event)
+    const { top, left } = card.getBoundingClientRect()
+    this.#ghostCard.style.top = top + 'px'
+    this.#ghostCard.style.left = left + 'px'
+    this.#ghostCard.classList.add('grabbing')
+
+    this.#setDifferentPosition(event)
+
+    this.#columns.addEventListener('mouseup', this.#onMouseUpColumns)
+    this.#columns.addEventListener('mousemove', this.#onMouseMoveColumns)
+    this.#columns.addEventListener('mouseleave', this.#onMouseLeaveColumns)
   }
 
-  #setGhostCardPosition = (event) => {
-    if (!this.#cardDragged) return
-    this.#ghostCard.style.left = `${event.pageX - this.#ghostCard.offsetWidth / 2}px`
-    this.#ghostCard.style.top = `${event.pageY - this.#ghostCard.offsetHeight / 2}px`
+  #setDifferentPosition = (event) => {
+    this.#diffTop = event.pageY - this.#ghostCard.offsetTop
+    this.#diffLeft = event.pageX - this.#ghostCard.offsetLeft
   }
 
   #onMouseMoveColumns = (event) => {
     event.preventDefault()
-    this.#setGhostCardPosition(event)
+    if (!this.#cardDragged) return
+
+    this.#ghostCard.style.left = `${event.pageX - this.#diffLeft}px`
+    this.#ghostCard.style.top = `${event.pageY - this.#diffTop}px`
+    this.#ghostCard.style.cursor = 'grabbing'
   }
 
   #onMouseLeaveColumns = () => {
     if (!this.#cardDragged) return
 
-    this.#onMouseUpColumns()
+    this.#resetDraggedCard()
   }
 
-  #onMouseUpColumns = () => {
+  #resetDraggedCard = () => {
     this.#ghostCard && this.#ghostCard.remove()
     this.#cardDragged = null
     this.#ghostCard = null
+
+    this.#columns.removeEventListener('mouseup', this.#onMouseUpColumns)
+    this.#columns.removeEventListener('mousemove', this.#onMouseMoveColumns)
+    this.#columns.removeEventListener('mouseleave', this.#onMouseLeaveColumns)
+  }
+
+  #onMouseUpColumns = () => {
+    this.#resetDraggedCard()
   }
 }
