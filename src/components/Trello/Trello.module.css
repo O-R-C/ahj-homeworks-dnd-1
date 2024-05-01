@@ -22,15 +22,3 @@
 .warning::placeholder {
   color: red;
 }
-
-.dragged {
-  position: absolute;
-  z-index: 100;
-  cursor: grabbing;
-  pointer-events: none;
-  transform: rotate(-3deg);
-}
-
-.dragged.dragging {
-  opacity: 0.5;
-}

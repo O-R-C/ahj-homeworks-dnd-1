@@ -10,7 +10,7 @@ import styles from './card.module.css'
  * @return {HTMLElement} The card element.
  */
 export const card = (id, textContent = 'Awesome text') => {
-  const card = getElement({ tag: 'div', classes: styles.card })
+  const card = getElement({ tag: 'div', classes: styles.card, data: { id: `card` } })
   const paragraph = getElement({ tag: 'p', textContent, classes: styles['card__paragraph'] })
   const buttonDelete = getElement({
     tag: 'button',

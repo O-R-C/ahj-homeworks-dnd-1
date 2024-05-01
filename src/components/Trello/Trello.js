@@ -15,14 +15,10 @@ export default class Trello {
   #app
   #element
   #columns
-  #diffTop
-  #diffLeft
   #textarea
   #currentId
   #btnHidden
-  #ghostCard
   #formAddCard
-  #cardDragged
   #columnsArray
   #timerMessage
   #timerTextarea
@@ -50,6 +46,7 @@ export default class Trello {
     this.#addEventsListeners()
 
     this.#dnd = new DnD(this.#columns)
+    this.#dnd.init()
 
     this.#renderCards()
     this.#storage.loadTextarea() && this.#restoreTextarea()
@@ -72,7 +69,7 @@ export default class Trello {
    */
   #addEventsListeners() {
     this.#columns.addEventListener('click', this.#onClickColumns)
-    this.#columns.addEventListener('mousedown', this.#onMouseDownColumns)
+    // this.#columns.addEventListener('mousedown', this.#onMouseDownColumns)
   }
 
   /**
@@ -344,80 +341,5 @@ export default class Trello {
     this.#storage.saveCards(this.#cards)
 
     this.#renderCards()
-  }
-
-  #onMouseDownColumns = (event) => {
-    event.preventDefault()
-
-    if (event.target.closest('button')) return
-
-    const card = event.target.closest('[class^="card--"]')
-    if (!card) return
-
-    this.#cardDragged = card
-
-    this.#ghostCard = card.cloneNode(true)
-    this.#ghostCard.style.width = card.offsetWidth + 'px'
-    this.#ui.addDraggedClass(this.#ghostCard)
-
-    this.#element.prepend(this.#ghostCard)
-
-    const { top, left } = card.getBoundingClientRect()
-    this.#ghostCard.style.top = top + 'px'
-    this.#ghostCard.style.left = left + 'px'
-
-    this.#setDifferentPosition(event)
-
-    this.#columns.addEventListener('mouseup', this.#onMouseUpColumns)
-    this.#columns.addEventListener('mousemove', this.#onMouseMoveColumns)
-    this.#columns.addEventListener('mouseleave', this.#onMouseLeaveColumns)
-  }
-
-  #setDifferentPosition = (event) => {
-    this.#diffTop = event.pageY - this.#ghostCard.offsetTop
-    this.#diffLeft = event.pageX - this.#ghostCard.offsetLeft
-  }
-
-  #onMouseMoveColumns = (event) => {
-    event.preventDefault()
-    if (!this.#cardDragged) return
-
-    this.#ghostCard.style.left = `${event.pageX - this.#diffLeft}px`
-    this.#ghostCard.style.top = `${event.pageY - this.#diffTop}px`
-  }
-
-  #onMouseLeaveColumns = () => {
-    if (!this.#cardDragged) return
-
-    this.#resetDraggedCard()
-  }
-
-  #resetDraggedCard = () => {
-    this.#ghostCard && this.#ghostCard.remove()
-    this.#cardDragged = null
-    this.#ghostCard = null
-
-    this.#columns.removeEventListener('mouseup', this.#onMouseUpColumns)
-    this.#columns.removeEventListener('mousemove', this.#onMouseMoveColumns)
-    this.#columns.removeEventListener('mouseleave', this.#onMouseLeaveColumns)
-  }
-
-  #onMouseUpColumns = (event) => {
-    if (!this.#cardDragged) return
-
-    const point = document.elementFromPoint(event.clientX, event.clientY)
-    const closestCard = point.closest('[class^="card--"]')
-    if (closestCard) {
-      const closestContent = point.closest('[class*="column-content"]')
-
-      const { top } = closestCard.getBoundingClientRect()
-      if (event.pageY > window.scrollY + top + closestCard.offsetHeight / 2) {
-        closestContent.insertBefore(this.#cardDragged, closestCard.nextElementSibling)
-      } else {
-        closestContent.insertBefore(this.#cardDragged, closestCard)
-      }
-    }
-
-    this.#resetDraggedCard()
   }
 }

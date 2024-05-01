@@ -14,7 +14,7 @@ import styles from './column.module.css'
 export const column = (title, classes) => {
   const column = getElement({ tag: 'div', id: classes, classes: [classes, styles.column] })
   const header = getElement({ tag: 'h2', textContent: title, classes: styles.columnHeader })
-  const content = getElement({ tag: 'div', classes: styles.columnContent })
+  const content = getElement({ tag: 'div', classes: styles.columnContent, data: { id: 'column-content' } })
   const footer = addCard()
 
   column.append(header, content, footer)
