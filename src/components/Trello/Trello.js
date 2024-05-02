@@ -350,6 +350,11 @@ export default class Trello {
     this.#renderCards()
   }
 
+  /**
+   * Handles the drag and drop event.
+   *
+   * @param {Event} event - The drag and drop event.
+   */
   #onDraggedFinish = (event) => {
     event.preventDefault()
 

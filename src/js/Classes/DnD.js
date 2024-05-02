@@ -229,6 +229,11 @@ export default class DnD {
     this.#container.removeEventListener('mousemove', this.#onGhostCardOver)
   }
 
+  /**
+   * Sends a custom event with the dragged card's data.
+   *
+   * @return {void}
+   */
   #sendCustomEvent = () => {
     this.#container.dispatchEvent(
       new CustomEvent('draggedFinish', {
