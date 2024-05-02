@@ -272,6 +272,7 @@ export default class DnD {
   #setCursorGrabbing = (event) => {
     event.target.classList.add('grabbing')
     event.target.addEventListener('mouseleave', this.#removeClassGrabbing)
+    event.target.addEventListener('mouseup', this.#removeClassGrabbing)
   }
 
   /**
@@ -283,5 +284,6 @@ export default class DnD {
   #removeClassGrabbing = (event) => {
     event.target.classList.remove('grabbing')
     event.target.removeEventListener('mouseleave', this.#removeClassGrabbing)
+    event.target.removeEventListener('mouseup', this.#removeClassGrabbing)
   }
 }
