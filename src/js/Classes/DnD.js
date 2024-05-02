@@ -44,17 +44,18 @@ export default class DnD {
     const { top, left } = this.#draggedCard.getBoundingClientRect()
     this.#setDifferentPosition(event, top, left)
 
-    this.#ghostCard.style.width = this.#draggedCard.offsetWidth + 'px'
     this.#ghostCard.style.height = this.#draggedCard.offsetHeight + 'px'
-    this.#ghostCard.style['pointer-events'] = 'none'
-    this.#ghostCard.style['user-select'] = 'none'
-    this.#ghostCard.style.position = 'absolute'
-    this.#ghostCard.style.cursor = 'grabbing'
-    this.#ghostCard.style.transform = 'rotate(-3deg)'
+    this.#ghostCard.style.width = this.#draggedCard.offsetWidth + 'px'
     this.#ghostCard.style.left = `${window.scrollX + left}px`
     this.#ghostCard.style.top = `${window.scrollY + top}px`
-    this.#ghostCard.style.opacity = 0.5
-    this.#ghostCard.style.zIndex = 9999
+    this.#ghostCard.classList.add('dragged')
+    // this.#ghostCard.style.transform = 'rotate(-3deg)'
+    // this.#ghostCard.style['pointer-events'] = 'none'
+    // this.#ghostCard.style['user-select'] = 'none'
+    // this.#ghostCard.style.position = 'absolute'
+    // this.#ghostCard.style.cursor = 'grabbing'
+    // this.#ghostCard.style.opacity = 0.3
+    // this.#ghostCard.style.zIndex = 9999
   }
 
   #setStylesSpot = () => {

@@ -249,7 +249,7 @@ export default class Trello {
 
     const text = this.#textarea.value
 
-    if (!text) {
+    if (!text.trim()) {
       this.#showMessageNoEmptyCard()
       this.#highlightMessageNoEmptyCard()
       return
@@ -263,6 +263,7 @@ export default class Trello {
    * Displays a message when the textarea is empty.
    */
   #showMessageNoEmptyCard() {
+    this.#textarea.value = ''
     this.#textarea.placeholder = 'Please, write something here...'
   }
 
