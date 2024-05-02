@@ -1,5 +1,3 @@
-import column from '@/components/column/column'
-
 /**
  * The DnD class.
  */
@@ -116,7 +114,7 @@ export default class DnD {
   }
 
   /**
-   * Sets the action listeners for the ghost card.
+   * Sets the action listeners for this.#container.
    *
    * @return {void} This function does not return anything.
    */
