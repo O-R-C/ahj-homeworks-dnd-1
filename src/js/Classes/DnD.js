@@ -49,13 +49,6 @@ export default class DnD {
     this.#ghostCard.style.left = `${window.scrollX + left}px`
     this.#ghostCard.style.top = `${window.scrollY + top}px`
     this.#ghostCard.classList.add('dragged')
-    // this.#ghostCard.style.transform = 'rotate(-3deg)'
-    // this.#ghostCard.style['pointer-events'] = 'none'
-    // this.#ghostCard.style['user-select'] = 'none'
-    // this.#ghostCard.style.position = 'absolute'
-    // this.#ghostCard.style.cursor = 'grabbing'
-    // this.#ghostCard.style.opacity = 0.3
-    // this.#ghostCard.style.zIndex = 9999
   }
 
   #setStylesSpot = () => {
@@ -130,6 +123,8 @@ export default class DnD {
   #onGhostCardOver = (event) => {
     if (!this.#draggedCard) return
 
+    this.#setCursorGrabbing(event)
+
     const closestContent = event.target.closest('[data-id="column-content"]')
     const closestCard = event.target.closest('[data-id="card"]')
 
@@ -145,5 +140,15 @@ export default class DnD {
 
   #hasCards = (content) => {
     return content.hasChildNodes()
+  }
+
+  #setCursorGrabbing = (event) => {
+    event.target.classList.add('grabbing')
+    event.target.addEventListener('mouseleave', this.#removeClassGrabbing)
+  }
+
+  #removeClassGrabbing = (event) => {
+    event.target.classList.remove('grabbing')
+    event.target.removeEventListener('mouseleave', this.#removeClassGrabbing)
   }
 }

@@ -45,3 +45,7 @@ body .dragged {
 
   pointer-events: none;
 }
+
+.grabbing {
+  cursor: grabbing !important;
+}
