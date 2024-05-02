@@ -2,12 +2,20 @@
  *
  */
 export const exampleDataCards = {
-  first: [
+  ['column-first']: [
     { textContent: 'Card 1', id: 'test-1' },
     { textContent: 'Card 2', id: 'test-2' },
-    { textContent: 'Card 3', id: 'test-3' },
+    {
+      textContent: `
+    Card 3    
+      
+  {\\__/} 
+   (•ᴗ•)
+   / > \\`,
+      id: 'test- 3',
+    },
   ],
-  second: [
+  ['column-second']: [
     {
       textContent: `Card 4
         3
@@ -26,12 +34,16 @@ export const exampleDataCards = {
       id: 'test-6',
     },
   ],
-  third: [
+  ['column-third']: [
     { textContent: 'Card 7', id: 'test-7' },
     { textContent: 'Card 8', id: 'test-8' },
     {
-      textContent: `Card 9
-                    Card 10`,
+      textContent: `
+      Card 9
+
+   {\\__/}{\\__/}
+    (•ᴗ•) (•ᴗ•)
+    / > \\ / >< \\`,
       id: 'test-9',
     },
   ],

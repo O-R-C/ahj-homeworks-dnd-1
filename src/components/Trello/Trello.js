@@ -10,13 +10,13 @@ import exampleDataCards from '@/js/exampleDataCards'
 export default class Trello {
   #ui = new TrelloUI()
   #storage = new Storage()
-  #cards = this.#storage.loadCards() ?? exampleDataCards ?? { first: [], second: [], third: [] }
+  #cards = this.#storage.loadCards() ??
+    exampleDataCards ?? { ['column-first']: [], ['column-second']: [], ['column-third']: [] }
   #dnd
   #app
   #element
   #columns
   #textarea
-  #currentId
   #btnHidden
   #formAddCard
   #columnsArray
@@ -69,7 +69,7 @@ export default class Trello {
    */
   #addEventsListeners() {
     this.#columns.addEventListener('click', this.#onClickColumns)
-    // this.#columns.addEventListener('mousedown', this.#onMouseDownColumns)
+    this.#columns.addEventListener('draggedFinish', this.#onDraggedFinish)
   }
 
   /**
@@ -134,7 +134,6 @@ export default class Trello {
    */
   #setCurrentsParams(btn) {
     this.#currentColumn = btn.closest('[id*="column"]')
-    this.#currentId = this.#currentColumn.id.replace(/column-/, '')
   }
 
   /**
@@ -211,7 +210,7 @@ export default class Trello {
 
     this.#timerTextarea = setTimeout(() => {
       this.#storage.saveTextarea(this.#currentColumn.id, this.#textarea.value)
-    }, 300)
+    }, 200)
   }
 
   /**
@@ -285,10 +284,17 @@ export default class Trello {
    * @param {string} text - The text to be saved in the card.
    */
   #saveCard(text) {
-    this.#cards[this.#currentId].push(new Card(text))
-    this.#storage.saveCards(this.#cards)
+    this.#cards[this.#currentColumn.id].push(new Card(text))
+    this.#saveCards()
 
     this.#renderCards()
+  }
+
+  /**
+   * Saves the cards in localStorage.
+   */
+  #saveCards() {
+    this.#storage.saveCards(this.#cards)
   }
 
   /**
@@ -301,8 +307,8 @@ export default class Trello {
     this.#resetColumns()
 
     this.#columnsArray.forEach((column) => {
+      const cardsInColumn = this.#cards[column.id]
       const columnContent = column.querySelector('[class*="column-content"]')
-      const cardsInColumn = this.#cards[column.id.replace(/column-/, '')]
 
       cardsInColumn.forEach((card) => {
         columnContent.append(this.#ui.getCard(card.id, card.textContent))
@@ -335,12 +341,37 @@ export default class Trello {
    */
   #deleteCard(btn) {
     const card = btn.closest('[class*="card"]')
+    const column = card.closest('[id^="column-"]')
     const id = card.dataset.id
 
-    this.#cards[this.#currentId] = this.#cards[this.#currentId].filter((card) => card.id !== id)
+    this.#cards[column.id] = this.#cards[column.id].filter((card) => card.id !== id)
 
-    this.#storage.saveCards(this.#cards)
-
+    this.#saveCards()
     this.#renderCards()
+  }
+
+  #onDraggedFinish = (event) => {
+    event.preventDefault()
+
+    const { btnId, startColumnId, finishColumnId, prevId } = event.detail
+
+    this.#replaceCard(btnId, startColumnId, finishColumnId, prevId)
+    this.#saveCards()
+  }
+
+  /**
+   * Replaces the card.
+   *
+   * @param {HTMLElement} btn - The button that was dragged.
+   * @param {number} columnId - The id of the column.
+   * @param {number} [prev] - The index of the card in the previous column.
+   */
+  #replaceCard(btnId, startColumnId, finishColumnId, prevId = 0) {
+    const prevIndex = !prevId ? 0 : this.#cards[finishColumnId].findIndex((card) => card.id === prevId) + 1
+    console.log('🚀 ~ prevIndex:', prevIndex)
+    const draggedCardIndex = this.#cards[startColumnId].findIndex((card) => card.id === btnId)
+    const draggedCard = this.#cards[startColumnId].splice(draggedCardIndex, 1)[0]
+    this.#cards[finishColumnId].splice(prevIndex, 0, draggedCard)
+    console.log('🚀 ~ this.#cards:', this.#cards)
   }
 }

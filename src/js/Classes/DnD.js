@@ -1,7 +1,10 @@
+import column from '@/components/column/column'
+
 /**
  * The DnD class.
  */
 export default class DnD {
+  #startColumnId
   #draggedCard
   #ghostCard
   #spotCard
@@ -48,8 +51,10 @@ export default class DnD {
 
     if (event.target.closest('button')) return
 
-    this.#draggedCard = event.target.closest('[data-id="card"]')
+    this.#draggedCard = event.target.closest('[class^="card--"]')
     if (!this.#draggedCard) return
+
+    this.#startColumnId = this.#draggedCard.closest('[id^="column-"]').id
 
     this.#ghostCard = this.#draggedCard.cloneNode(true)
     this.#spotCard = this.#draggedCard.cloneNode()
@@ -204,6 +209,8 @@ export default class DnD {
    * @return {void}
    */
   #resetDraggedCard = () => {
+    this.#sendCustomEvent()
+
     if (this.#ghostCard) {
       this.#ghostCard.remove()
     }
@@ -220,6 +227,19 @@ export default class DnD {
     this.#container.removeEventListener('mousemove', this.#onMouseMove)
     this.#container.removeEventListener('mouseleave', this.#onMouseLeave)
     this.#container.removeEventListener('mousemove', this.#onGhostCardOver)
+  }
+
+  #sendCustomEvent = () => {
+    this.#container.dispatchEvent(
+      new CustomEvent('draggedFinish', {
+        detail: {
+          btnId: this.#draggedCard.dataset.id,
+          startColumnId: this.#startColumnId,
+          finishColumnId: this.#draggedCard.closest('[id^="column-"]').id,
+          prevId: this.#draggedCard.previousElementSibling?.dataset.id,
+        },
+      }),
+    )
   }
 
   /**
@@ -239,7 +259,7 @@ export default class DnD {
     this.#setCursorGrabbing(event)
 
     const closestContent = event.target.closest('[data-id="column-content"]')
-    const closestCard = event.target.closest('[data-id="card"]')
+    const closestCard = event.target.closest('[class^="card--"]')
 
     if (closestContent && !this.#hasCards(closestContent)) {
       closestContent.insertBefore(this.#spotCard, closestCard)
